@@ -1,0 +1,45 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Note that some adapters may set a maximum length for the String type by default, please ensure your strings are long
+// enough when changing adapters.
+// See https://www.prisma.io/docs/orm/reference/prisma-schema-reference#string for more information
+datasource db {
+  provider = "sqlite"
+  url      = "file:dev.sqlite"
+}
+
+model Session {
+  id            String    @id
+  shop          String
+  state         String
+  isOnline      Boolean   @default(false)
+  scope         String?
+  expires       DateTime?
+  accessToken   String
+  userId        BigInt?
+  firstName     String?
+  lastName      String?
+  email         String?
+  accountOwner  Boolean   @default(false)
+  locale        String?
+  collaborator  Boolean?  @default(false)
+  emailVerified Boolean?  @default(false)
+}
+
+model QRCode {
+  id               Int      @id @default(autoincrement()) // numeric id for each QR code
+  title            String   // name of the QR code 
+  shop             String   // which shop this QR belongs to
+  productId        String   // GraphQL id of the product
+  productHandle    String   // handle used in the product URL
+  productVariantId String   // GraphQL id of the variant
+  destination      String   //"checkout" (where the QR sends customers)
+  scans            Int      @default(0) // how many times this QR was scanned
+  createdAt        DateTime @default(now()) // when this QR was created
+  //every logic and redirection is written inside the server helper meaning for us its ("QrCode.server.js")
+}

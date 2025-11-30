@@ -1,0 +1,47 @@
+{%- comment -%}
+  QR block on product page
+{%- endcomment -%}
+
+{%- assign app_base_url = "https://super-jeffrey-knight-eternal.trycloudflare.com" -%}
+
+{%- comment -%} Wrapper for QR text + image {%- endcomment -%}
+<div class="qr-demo-block" style="margin-top: 16px;">
+  {%- comment -%} Small heading text {%- endcomment -%}
+  <p
+    class="qr-demo-heading"
+    style="font-size: 14px; font-weight: 500; margin-bottom: 8px;"
+  >
+    Scan this QR to buy from your phone
+  </p>
+
+  {%- comment -%}
+    QR image from app:
+    - shop.permanent_domain → shop domain
+    - product.admin_graphql_api_id → GraphQL product id
+  {%- endcomment -%}
+  <img
+    src="{{ app_base_url }}/qrcodes/image?shop={{ shop.permanent_domain | url_encode }}&productId={{ product.admin_graphql_api_id | url_encode }}"
+    alt="QR code for {{ product.title | escape }}"
+    loading="lazy"
+    width="128"
+    height="128"
+    style="
+      width: 128px;
+      height: 128px;
+      object-fit: contain;
+      border-radius: 8px;
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+      padding: 8px;
+    "
+  >
+</div>
+
+{%- comment -%} Block schema for theme editor {%- endcomment -%}
+{% schema %}
+{
+  "name": "QR product block",
+  "target": "section",
+  "settings": []
+}
+{% endschema %}

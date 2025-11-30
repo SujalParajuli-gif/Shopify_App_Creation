@@ -1,5 +1,3 @@
-// app/models/QRCode.server.ts
-
 import qrcode from "qrcode";              // this library creates QR code image data
 import invariant from "tiny-invariant";   // this helps throw clear errors
 import db from "../db.server";            // this is the Prisma client already set up
@@ -8,7 +6,7 @@ import db from "../db.server";            // this is the Prisma client already s
 // Looks up one QR by id in the QRCode table.
 // If not found → returns null.
 // If found → calls supplementQRCode to attach product info + QR image
-export async function getQRCode(id: number, graphql: any) {
+export async function getQRCode(id, graphql) {
   // findFirst will look up one row in the QRCode table that matches the id
   const qrCode = await db.qRCode.findFirst({
     where: { id: id }, // using id: id so it feels more explicit
@@ -25,7 +23,7 @@ export async function getQRCode(id: number, graphql: any) {
 }
 
 // this function gets all QRs for a specific shop (used for the main list page)
-export async function getQRCodes(shop: string, graphql: any) {
+export async function getQRCodes(shop, graphql) {
   // get all QR codes that belong to this shop
   const qrCodes = await db.qRCode.findMany({
     where: { shop: shop },  // only rows for this shop
@@ -39,7 +37,7 @@ export async function getQRCodes(shop: string, graphql: any) {
 
   // we create a new list and fill it one by one
   // this is easy to read even if it is not the most optimized
-  const fullQRCodes: any[] = [];
+  const fullQRCodes = [];
 
   for (const qrCode of qrCodes) {
     const fullQRCode = await supplementQRCode(qrCode, graphql);
@@ -51,8 +49,8 @@ export async function getQRCodes(shop: string, graphql: any) {
 }
 
 // finds the latest QR code row for a given shop + product
-// this is used by the public theme app extension to show the QR on product pages
-export async function getQRCodeForProduct(shop: string, productId: string) {
+// this is used by the theme app extension to show the QR on product pages
+export async function getQRCodeForProduct(shop, productId) {
   // pick the newest QR created for this product in this shop
   // (in case there are multiple QR rows for the same product)
   const qrCode = await db.qRCode.findFirst({
@@ -70,10 +68,12 @@ export async function getQRCodeForProduct(shop: string, productId: string) {
 }
 
 // this helper builds a QR image as a data URL that the React UI can show
-export function getQRCodeImage(id: number) {
+export function getQRCodeImage(id) {
   // the scan URL is where customers will land when they scan the code
   const baseUrl = process.env.SHOPIFY_APP_URL;
+
   if (!baseUrl) {
+    // small safety check so we don't generate broken URLs silently
     throw new Error("SHOPIFY_APP_URL is not set in the environment");
   }
 
@@ -84,7 +84,7 @@ export function getQRCodeImage(id: number) {
 }
 
 // this helper figures out where this QR should send customers
-export function getDestinationUrl(qrCode: any) {
+export function getDestinationUrl(qrCode) {
   // "product" means send to the product page
   // In this app we are focusing on "reorder" use case,
   // so we always send the customer straight to checkout with the product alr inside there cart
@@ -106,7 +106,7 @@ export function getDestinationUrl(qrCode: any) {
 }
 
 // this internal function adds extra data (image + product info) to a QR row
-async function supplementQRCode(qrCode: any, graphql: any) {
+async function supplementQRCode(qrCode, graphql) {
   // build QR image in parallel with the GraphQL product request
   const qrCodeImagePromise = getQRCodeImage(qrCode.id);
 
@@ -153,9 +153,10 @@ async function supplementQRCode(qrCode: any, graphql: any) {
     productTitle: product ? product.title : undefined,
 
     // product image url
-    productImage: product && product.featuredImage
-      ? product.featuredImage.url
-      : undefined,
+    productImage:
+      product && product.featuredImage
+        ? product.featuredImage.url
+        : undefined,
 
     // price is now a simple scalar value
     price: productVariant ? productVariant.price : undefined,
@@ -163,7 +164,7 @@ async function supplementQRCode(qrCode: any, graphql: any) {
 }
 
 // this helper is used by the public scan route (no GraphQL needed here)
-export async function getQRCodeRecord(id: number) {
+export async function getQRCodeRecord(id) {
   // only fetches the DB row, no extra product info
   const qrCode = await db.qRCode.findFirst({
     where: { id: id },
@@ -173,7 +174,7 @@ export async function getQRCodeRecord(id: number) {
 }
 
 // this helper increments the scan counter for a QR row
-export async function recordScan(qrCode: any) {
+export async function recordScan(qrCode) {
   // uses Prisma's increment to add 1 to scans
   const updatedQRCode = await db.qRCode.update({
     where: { id: qrCode.id },

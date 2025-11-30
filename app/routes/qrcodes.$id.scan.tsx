@@ -1,5 +1,3 @@
-// app/routes/qrcodes.$id.scan.tsx
-
 import type { LoaderFunctionArgs, HeadersFunction } from "react-router";
 import { redirect } from "react-router";
 import { boundary } from "@shopify/shopify-app-react-router/server";
@@ -25,7 +23,6 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (Number.isNaN(id)) {
     throw new Response("Invalid QR code id", { status: 400 });
   }
-
   // get the raw QR row from the database
   const qrCode = await getQRCodeRecord(id);
 

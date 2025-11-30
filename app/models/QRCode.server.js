@@ -50,13 +50,13 @@ export async function getQRCodes(shop, graphql) {
 
 // finds the latest QR code row for a given shop + product
 // this is used by the theme app extension to show the QR on product pages
-export async function getQRCodeForProduct(shop, productId) {
+export async function getQRCodeForProduct(shop, productHandle) {
   // pick the newest QR created for this product in this shop
   // (in case there are multiple QR rows for the same product)
   const qrCode = await db.qRCode.findFirst({
     where: {
       shop,
-      productId,
+      productHandle, // now matching by handle instead of productId
     },
     orderBy: {
       createdAt: "desc",

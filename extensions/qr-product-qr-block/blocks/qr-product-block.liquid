@@ -2,14 +2,16 @@
   QR block on product page
 {%- endcomment -%}
 
-{%- assign app_base_url = "https://requirement-believes-width-cells.trycloudflare.com" -%}
+{%- assign app_base_url = "https://intensive-peterson-anchor-sentence.trycloudflare.com" -%}
+{%- comment -%} Above URL changes time to time because is is just a temporary tunnel for local development(Its not a fixdd domain){%- endcomment -%}
+
 
 {%- comment -%} Wrapper for QR text + image {%- endcomment -%}
 <div class="qr-demo-block" style="margin-top: 16px;">
   {%- comment -%} Small heading text {%- endcomment -%}
   <p
     class="qr-demo-heading"
-    style="font-size: 14px; font-weight: 500; margin-bottom: 8px;"
+    style="font-size: 14px; font-weight: 500; margin-bottom: 8px; color: red"
   >
     Scan this QR to buy from your phone
   </p>
@@ -23,11 +25,11 @@
     src="{{ app_base_url }}/qrcodes/image?shop={{ shop.permanent_domain | url_encode }}&handle={{ product.handle | url_encode }}"
     alt="QR code for {{ product.title | escape }}"
     loading="lazy"
-    width="128"
-    height="128"
+    width="110px"
+    height="110px"
     style="
-      width: 128px;
-      height: 128px;
+      width: 110px;
+      height: 110px;
       object-fit: contain;
       border-radius: 8px;
       border: 1px solid #e5e7eb;

@@ -43,3 +43,12 @@ model QRCode {
   createdAt        DateTime @default(now()) // when this QR was created
   //every logic and redirection is written inside the server helper meaning for us its ("QrCode.server.js")
 }
+
+model ProductDiscount {
+  id         String   @id @default(cuid())
+  shop       String   // shop domain, e.g. "my-dev-store.myshopify.com"
+  title      String   // label for the discount, which is shown in admin
+  percentage Int      // 10 means 10% off
+  productId  String   // Shopify product GID (gid://shopify/Product/123...)
+  createdAt  DateTime @default(now())
+}

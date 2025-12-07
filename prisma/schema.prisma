@@ -46,9 +46,10 @@ model QRCode {
 
 model ProductDiscount {
   id         String   @id @default(cuid())
-  shop       String   // shop domain, e.g. "my-dev-store.myshopify.com"
-  title      String   // label for the discount, which is shown in admin
+  shop       String   // shop domain, e.g. my-dev-store.myshopify.com
+  title      String   // label for the discount
   percentage Int      // 10 means 10% off
   productId  String   // Shopify product GID (gid://shopify/Product/123...)
   createdAt  DateTime @default(now())
 }
+

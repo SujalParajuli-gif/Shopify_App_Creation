@@ -1,25 +1,18 @@
-// this file contains server side reusable helper functions
-// for discount calculation and logics
+// this file is for simple helper functions for our discount feature
 
 import invariant from "tiny-invariant";
 import db from "../db.server";
 
-// this file is like QRCode.server.ts but for simple product discounts
-
-export interface CreateProductDiscountInput {
+// creates 1 discount row in the database
+export async function createProductDiscount(input: {
   shop: string;
   title: string;
   percentage: number;
-  productId: string; // Shopify product GID
-}
+  productId: string;
+}) {
+  const { shop, title, percentage, productId } = input;
 
-// creating  a new product discount row
-export async function createProductDiscount({
-  shop,
-  title,
-  percentage,
-  productId,
-}: CreateProductDiscountInput) {
+  // basic safety checks
   invariant(shop, "shop is required");
   invariant(title, "title is required");
   invariant(productId, "productId is required");
@@ -39,7 +32,7 @@ export async function createProductDiscount({
   return discount;
 }
 
-// get a list of discounts for one shop (for admin list view)
+// get all discounts for a shop (for listing in admin page)
 export async function listProductDiscounts(shop: string) {
   return db.productDiscount.findMany({
     where: { shop },
@@ -47,12 +40,12 @@ export async function listProductDiscounts(shop: string) {
   });
 }
 
-// find discount for a single product (used by theme app extension)
-export async function getDiscountForProduct(args: {
+// get one discount for one product (used by storefront)
+export async function getDiscountForProduct(input: {
   shop: string;
   productId: string;
 }) {
-  const { shop, productId } = args;
+  const { shop, productId } = input;
 
   return db.productDiscount.findFirst({
     where: {
